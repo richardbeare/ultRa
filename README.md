@@ -8,6 +8,6 @@ AAA software.
 
 Recommended installation is via the R devtools package:
 
-devtools::install_github("richardbeare/utlRa")
+devtools::install_github("richardbeare/ultRa")
 
 
