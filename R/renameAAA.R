@@ -23,18 +23,35 @@ renameAAA <- function(txtfile=NULL)
         dates <- sapply(dat, "[", 2)
         words <- sapply(dat, "[", 1)
 
+        ## need to confirm %d%m - check leading zeros
+        dates <- as.POSIXct(dates, format="%d/%m/%G %r")
         speaker <- gsub("[,[:blank:]]+", "_", speaker)
         words <- gsub("[,[:blank:]]+", "_", words)
         newnames <- paste0(speaker, "_", words);
         names(newnames) <- all.prefixes
+        names(dates) <- all.prefixes
         ## Now list the different files we need to rename
         original <- list.files(path=txtfile, pattern="File[[:digit:]]{3}.*\\..*", full.names=TRUE)
         prefixes <- gsub("(File[[:digit:]]{3}).+", "\\1", basename(original))
         suffixes <- gsub("(File[[:digit:]]{3})(.+)", "\\2", basename(original))
         newprefix <- newnames[file.path(dirname(original), prefixes)]
-        outname <- file.path(dirname(original), paste0(newprefix, "_", suffixes))
+        newdates <- dates[file.path(dirname(original), prefixes)]
+        ## deal with duplicate out names
+        tmpname <- paste(newprefix,suffixes)
+        oo <- order(tmpname,newdates)
+        original <- original[oo]
+        suffixes <- suffixes[oo]
+        newprefix <- newprefix[oo]
+        tmpname <- tmpname[oo]
+        l <- rle(tmpname)
+
+        ll <- as.character(unlist(lapply(l$lengths, function(y)1:y)))
+        
+        outname <- file.path(dirname(original), paste0(newprefix,"_", ll, "_", suffixes))
         outname <- gsub("_+", "_", outname)
         outname <- gsub("_\\.", ".", outname)
+
+        
         file.rename(from=original, to=outname)
         return(cbind(original, outname))
     }
