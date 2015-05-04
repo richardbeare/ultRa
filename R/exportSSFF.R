@@ -83,12 +83,12 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         outnames.conf <- file.path(targdir, paste0(outnames, ".spconf"))
         for (i in 1:length(promptrows)) {
           these.rows <- promptrows[[i]]
-          #browser()
+          starttime <- timesperprompt[[i]][1]
           sp <- as.vector(splines[, these.rows])
           storage.mode(sp) <- "double"
           ssff.header <- c("SSFF -- (c) SHLRC",
                            "Machine IBM-PC",
-                           paste("Start_Time", as.character()),
+                           paste("Start_Time", formatC(starttime,digits=5)),
                            paste("Record_Freq", as.numeric(1/ samplerate)),
                            "Column XY DOUBLE 84")
                            
