@@ -1,3 +1,25 @@
+#' Create modified names for AAA files. Removes punctuation that offends tcltk
+#' @param files the output of list.files
+#' @export
+#' @return list of modified names
+#' @example
+#' f<-list.files(path="c:/Tabain/English_Ultrasound/", full.names=TRUE)
+#' f1 <- gsub("_Track1", "", f)
+#' f2 <- fixNamesForEMU(f1)
+#' need.to.do <- basename(f) != basename(f2)
+#' file.rename(from=f[need.to.do], to=f2[need.to.do])
+fixNamesForEMU <- function(files)
+{
+  b <- basename(files)
+  d <- dirname(files)
+  
+  b1 <- gsub("'", "", b)
+  b2 <- gsub("\\[.+\\]", "", b1)
+  b3 <- gsub("__+", "_", b2)
+  return(file.path(d,b3))
+}
+
+
 #' Convert the text file containing spline data to ssff
 #' @param txtfile the exported AAA spline file
 #' @param targdir where the output will be written
@@ -5,7 +27,10 @@
 #' @param tracksuf suffix appended to each filename to match the soundfiles already exported
 #' @export
 #' @return the list of prompts, invisibly
-exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tracksuf="_Track1")
+#' @example
+#' exportSplinesSSFF("c:/AAA/Richard_Spline_Export_02_05_2015.txt", targdir="c:/Tabain/English_Ultrasound/")
+
+exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tracksuf="")
     {
         if (is.null(txtfile)) {
             txtfile <- file.choose()
@@ -80,7 +105,9 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         outnames <- paste0(clientname, "_", only.prompt, "_", ll, tracksuf)
         outnames <- gsub(" +", "_", outnames)
         outnames.spline <- file.path(targdir, paste0(outnames, ".spln"))
+        outnames.spline <- fixNamesForEMU(outnames.spline)
         outnames.conf <- file.path(targdir, paste0(outnames, ".spconf"))
+        outnames.conf <- fixNamesForEMU(outnames.conf)
         for (i in 1:length(promptrows)) {
           these.rows <- promptrows[[i]]
           starttime <- timesperprompt[[i]][1]
@@ -90,7 +117,8 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
                            "Machine IBM-PC",
                            paste("Start_Time", formatC(starttime,digits=5)),
                            paste("Record_Freq", as.numeric(1/ samplerate)),
-                           "Column XY DOUBLE 84")
+                           "Column XY DOUBLE 84",
+                           "-----------------")
                            
           writeLines(ssff.header, outnames.spline[i])
           connection <- file(description=outnames.spline[i], open="a+b")
