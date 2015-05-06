@@ -12,7 +12,7 @@ fixNamesForEMU <- function(files)
 {
   b <- basename(files)
   d <- dirname(files)
-  
+
   b1 <- gsub("'", "", b)
   b2 <- gsub("\\[.+\\]", "", b1)
   b3 <- gsub("__+", "_", b2)
@@ -61,8 +61,8 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
           }
           return(g)
         })
-        
-        
+
+
         if (missingAsZero) {
           rest <- lapply(rest, function(M){
             M[is.na(M)] <- 0
@@ -73,8 +73,10 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         dim(rest) <- c(3*splinepts, length(prompts))
 
         splines <- rest[1:(2*splinepts),]
+        ## Reorder so that it is all X followed by all Y
+        splines <- splines[c(seq(from=1, to=2*splinepts, by=2), seq(from=2, to=2*splinepts, by=2)),]
         conf <- rest[(2*splinepts + 1):(3*splinepts),]
-        
+        splines <- rbind(splines,conf)
         ## Figure out the rows for each prompt
         ## split returns indexes in order
         promptrows <- split(1:length(promptAndtime), promptAndtime)
@@ -83,7 +85,7 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         samplerate <- median(diff(times))
         timesperprompt <- lapply(promptrows, function(G){return(times[G])})
         difftimes <- lapply(timesperprompt, function(J)return(abs(diff(J) - samplerate)))
-        
+
         diffwarning <- lapply(difftimes, function(d)d>0.001)
 
         if (any(unlist(diffwarning))) {
@@ -92,15 +94,15 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
           msg <- paste("Possible sample rate problem in ", paste(names(diffwarning)[prob], collapse=" : "))
           warning(msg)
         }
-        
+
         ## Now we figure out the output names
         ## Format is lastname_firstname_word
         clientname <- gsub(", ", "_", speaker)
-        
+
         unique.prompts <- names(promptrows)
         only.prompt <- gsub("(.+)__.+", "\\1", unique.prompts)
         l <- rle(only.prompt)
-        
+
         ll <- as.character(unlist(lapply(l$lengths, function(y)1:y)))
         outnames <- paste0(clientname, "_", only.prompt, "_", ll, tracksuf)
         outnames <- gsub(" +", "_", outnames)
@@ -117,15 +119,15 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
                            "Machine IBM-PC",
                            paste("Start_Time", formatC(starttime,digits=5)),
                            paste("Record_Freq", as.numeric(1/ samplerate)),
-                           "Column XY DOUBLE 84",
+                           paste("Column XY DOUBLE ", as.character(3*splinepts)),
                            "-----------------")
-                           
+
           writeLines(ssff.header, outnames.spline[i])
           connection <- file(description=outnames.spline[i], open="a+b")
           writeBin(sp, con=connection)
           close(connection)
         }
-        
+
         return(invisible(outnames.spline))
     }
-        
+
