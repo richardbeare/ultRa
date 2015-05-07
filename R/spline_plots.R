@@ -80,7 +80,7 @@ shinyTongue <- function(splineDat)
     
     sidebarLayout(
       sidebarPanel(checkboxGroupInput("promptchoice", "Prompts to display",
-                                      choices=chk, selected=chk[1])),
+                                      choices=chk, selected=chk[1], inline=TRUE)),
       mainPanel(plotOutput("hist"))
     )
     ),
