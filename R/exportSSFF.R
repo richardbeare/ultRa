@@ -2,12 +2,14 @@
 #' @param files the output of list.files
 #' @export
 #' @return list of modified names
-#' @example
+#' @examples
+#' \dontrun{
 #' f<-list.files(path="c:/Tabain/English_Ultrasound/", full.names=TRUE)
 #' f1 <- gsub("_Track1", "", f)
 #' f2 <- fixNamesForEMU(f1)
 #' need.to.do <- basename(f) != basename(f2)
 #' file.rename(from=f[need.to.do], to=f2[need.to.do])
+#' }
 fixNamesForEMU <- function(files)
 {
   b <- basename(files)
@@ -27,9 +29,10 @@ fixNamesForEMU <- function(files)
 #' @param tracksuf suffix appended to each filename to match the soundfiles already exported
 #' @export
 #' @return the list of prompts, invisibly
-#' @example
+#' @examples
+#' \dontrun{
 #' exportSplinesSSFF("c:/AAA/Richard_Spline_Export_02_05_2015.txt", targdir="c:/Tabain/English_Ultrasound/")
-
+#' }
 exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tracksuf="")
     {
         if (is.null(txtfile)) {
