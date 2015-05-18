@@ -24,7 +24,7 @@ g<-splineDatForGG(tongue.marija, labs)
 
 ggplot(g, aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_line() +
 geom_point(aes(size=certainty)) + facet_wrap(~unique.tag)
-ggplot(subset(g, orig.tag=="h a: d"), aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_line() +
+ggplot(subset(g, orig.tag=="h a: d"), aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_path() +
 geom_point(aes(size=certainty)) + facet_wrap(~unique.tag)
 }
 }
