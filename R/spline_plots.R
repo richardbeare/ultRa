@@ -33,7 +33,7 @@ extractTongue <- function(trackdata)
 #' 
 #' ggplot(g, aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_line() + 
 #' geom_point(aes(size=certainty)) + facet_wrap(~unique.tag)
-#' ggplot(subset(g, orig.tag=="h a: d"), aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_line() + 
+#' ggplot(subset(g, orig.tag=="h a: d"), aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_path() + 
 #' geom_point(aes(size=certainty)) + facet_wrap(~unique.tag)
 #' }
 splineDatForGG <- function(trackdata, tags)
@@ -90,7 +90,7 @@ shinyTongue <- function(splineDat)
         gg <- subset(splineDat, orig.tag %in% input$promptchoice)
         if (nrow(gg)>0)
           ggplot(gg, aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + 
-            geom_line(aes(alpha=certainty))+ facet_wrap(~unique.tag)
+            geom_path(aes(alpha=certainty))+ facet_wrap(~unique.tag)
       }
         ,
         height=1000
