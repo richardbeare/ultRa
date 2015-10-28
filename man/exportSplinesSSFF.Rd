@@ -5,7 +5,7 @@
 \title{Convert the text file containing spline data to ssff}
 \usage{
 exportSplinesSSFF(txtfile = NULL, targdir = "./", missingAsZero = TRUE,
-  tracksuf = "")
+  tracksuf = "", fixPrompts = TRUE)
 }
 \arguments{
 \item{txtfile}{the exported AAA spline file}
@@ -15,6 +15,8 @@ exportSplinesSSFF(txtfile = NULL, targdir = "./", missingAsZero = TRUE,
 \item{missingAsZero}{Change NA to 0 so emu doesn't complain}
 
 \item{tracksuf}{suffix appended to each filename to match the soundfiles already exported}
+
+\item{fixPrompts}{attempts to use regular expressions to fix problems caused by tabs in the prompt list}
 }
 \value{
 the list of prompts, invisibly

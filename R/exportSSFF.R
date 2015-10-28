@@ -27,13 +27,14 @@ fixNamesForEMU <- function(files)
 #' @param targdir where the output will be written
 #' @param missingAsZero Change NA to 0 so emu doesn't complain
 #' @param tracksuf suffix appended to each filename to match the soundfiles already exported
+#' @param fixPrompts attempts to use regular expressions to fix problems caused by tabs in the prompt list
 #' @export
 #' @return the list of prompts, invisibly
 #' @examples
 #' \dontrun{
 #' exportSplinesSSFF("c:/AAA/Richard_Spline_Export_02_05_2015.txt", targdir="c:/Tabain/English_Ultrasound/")
 #' }
-exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tracksuf="")
+exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tracksuf="", fixPrompts=TRUE)
     {
         if (is.null(txtfile)) {
             txtfile <- file.choose()
@@ -50,6 +51,13 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         }
 
         raw <- raw[-1]
+        if (fixPrompts) {
+          ## Sometimes there are tabs in the prompt list, which messes up the columns. 
+          ## try to fix this with regular expressions. We're looking for multiple tabs appearing before
+          ## some non tabs. Lots of tabs in a row are possible when there are no splines, but they will
+          ## be at the end, I hope. Need to match the comma in the name and colon in time field
+          raw <- gsub("([^\t]+,.+)(\t{2,})(.+:.+)", "\\1\t\\3",raw)
+        }
         raw <- strsplit(raw, "\\t")
         speaker <- raw[[1]][1]
         ## Should be 42 spline points - 84 numbers - followed by 42 conf scores
