@@ -113,7 +113,6 @@ exportSplinesSSFF <- function(txtfile=NULL, targdir="./", missingAsZero=TRUE, tr
         unique.prompts <- names(promptrows)
         only.prompt <- gsub("(.+)__.+", "\\1", unique.prompts)
         l <- rle(only.prompt)
-
         ll <- as.character(unlist(lapply(l$lengths, function(y)1:y)))
         outnames <- paste0(clientname, "_", only.prompt, "_", ll, tracksuf)
         outnames <- gsub(" +", "_", outnames)

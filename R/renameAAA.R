@@ -22,6 +22,8 @@ renameAAA <- function(txtfile=NULL)
         speaker <- sapply(dat, "[", 3)
         dates <- sapply(dat, "[", 2)
         words <- sapply(dat, "[", 1)
+        ## Remove tabs from prompt list
+        words <- gsub("\t+$", "", words)
 
         ## need to confirm %d%m - check leading zeros
         dates <- as.POSIXct(dates, format="%d/%m/%G %r")
