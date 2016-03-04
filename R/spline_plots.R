@@ -36,24 +36,23 @@ extractTongue <- function(trackdata)
 #' ggplot(subset(g, orig.tag=="h a: d"), aes(x=X,y=Y,group=interaction(factor(sample),unique.tag), colour=time)) + geom_path() + 
 #' geom_point(aes(size=certainty)) + facet_wrap(~unique.tag)
 #' }
-splineDatForGG <- function(trackdata, tags)
+splineDatForGG <- function (trackdata, tags) 
 {
   if (nrow(trackdata) != length(tags)) {
     stop("Length of trackdata and labels doesn't match")
   }
-  ## put information about repeats on tags
-  l <- rle(tags)
-  
-  ll <- as.character(unlist(lapply(l$lengths, function(y)1:y)))
+  #l <- rle(tags)
+  #ll <- as.character(unlist(lapply(l$lengths, function(y) 1:y)))
+  ll <- 1:length(tags)
   tags.mod <- paste(tags, ll)
-  ## first extract all the XY and certainty data
-  trajectories <- lapply(1:length(tags), 
-                         function(idx){
-                            a<-extractTongue(trackdata[idx,])
-                            a$unique.tag <- tags.mod[idx]
-                            a$orig.tag <- tags[idx]
-                            return(a)
-                         })
+  tags.mod <- factor(1:length(tags.mod), labels=tags.mod)
+  ## is there a neater version with 
+  trajectories <- lapply(1:length(tags), function(idx) {
+    a <- extractTongue(trackdata[idx, ])
+    a$unique.tag <- tags.mod[idx]
+    a$orig.tag <- tags[idx]
+    return(a)
+  })
   names(trajectories) <- tags.mod
   trajectories <- do.call(rbind, trajectories)
   return(trajectories)
