@@ -6,7 +6,12 @@
 #' @return A dataframe with X, Y, certainty, time and sample columns
 extractTongue <- function(trackdata)
 {
-  d <- trackdata$data
+  if (inherits(trackdata, "trackdata"))
+  {
+    d <- trackdata$data
+  } else {
+    d <- trackdata
+  }
   lastx <- ncol(d)/3
   lasty <- 2*ncol(d)/3
   

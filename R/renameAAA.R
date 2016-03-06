@@ -5,6 +5,7 @@
 #' containing exported files, or select one of the files in the folder with a chooser dialog.
 #' Renaming proceeds without warning. Likely to be fragile if there is lots of punctuation in the
 #' word list.
+#' @export
 renameAAA <- function(txtfile=NULL)
     {
         if (is.null(txtfile)) {

@@ -2,12 +2,16 @@ Package: ultRa
 Title: Processing of speech ultrasound data.
 Version: 0.0.0.9000
 Authors@R: "Richard Beare <Richard.Beare@gmail.com> [aut, cre]"
-Description: What the package does (one paragraph)
+Description: Stuff for phonetics and ultrasound - tongue visualisation, stats.
 Depends:
     R (>= 3.1.1),
     ggplot2,
     shiny,
     plyr,
-    gss
+    dplyr,
+    tidyr,
+    gss,
+    emu
 License: What license is it under?
 LazyData: true
+RoxygenNote: 5.0.1
