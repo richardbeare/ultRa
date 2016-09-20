@@ -5,7 +5,7 @@
 \title{Convert the text file containing spline data to ssff}
 \usage{
 exportSplinesSSFF(txtfile = NULL, targdir = "./", missingAsZero = TRUE,
-  tracksuf = "", fixPrompts = TRUE)
+  tracksuf = "", filesuf = ".spln", fixPrompts = TRUE)
 }
 \arguments{
 \item{txtfile}{the exported AAA spline file}

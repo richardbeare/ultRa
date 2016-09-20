@@ -22,7 +22,8 @@ extractTongue <- function(trackdata)
   tt <- tt - tt[1]
   Time <- rep(tt, rep(ncol(d)/3, nrow(d)))
   samp <- rep(1:nrow(d), rep(ncol(d)/3, nrow(d)))
-  df <- data.frame(time=Time, X=as.vector(X), Y=as.vector(Y), sample=samp, certainty=as.vector(cert))
+  sidx <- rep(1:lastx, nrow(d))
+  df <- data.frame(time=Time, X=as.vector(X), Y=as.vector(Y), sample=samp, splineidx=sidx, certainty=as.vector(cert))
   return(df)
 }
 

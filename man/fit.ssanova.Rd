@@ -5,7 +5,7 @@
 \title{Function for fitting the ssanova and returning a prediction
 with confidence intervals.}
 \usage{
-fit.ssanova(DF)
+fit.ssanova(DF, theformula, weight = NULL)
 }
 \arguments{
 \item{DF}{dataframe with tongue spline}

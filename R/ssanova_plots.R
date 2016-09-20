@@ -11,15 +11,28 @@
 #' Function for fitting the ssanova and returning a prediction
 #' with confidence intervals.
 #' @param DF dataframe with tongue spline
-fit.ssanova <- function(DF)
+fit.ssanova <- function(DF, theformula,  weight=NULL)
 {
+  rhs <- all.vars(theformula[[3]])
+  lhs <- all.vars(theformula[[2]])
   # Have a special fitting function to deal with problem values
-  DF1 <- DF[DF$certainty > 0, ]
-  mod <- ssanova(Y ~ X, data=DF1, weight=DF1$certainty)
-  r<-range(DF1$X)
+  if (!is.null(weight)) {
+    DF1 <- DF[DF[[weight]] > 0, ]
+  } else {
+    DF1 <- DF
+  }
+  environment(theformula) <- environment()
+  if (is.null(weight)) {
+    mod <- ssanova(theformula, data=DF1)  
+  } else {
+    mod <- ssanova(theformula, data=DF1, weights=DF1[[weight]])
+  }
+  r<-range(DF1[[rhs]])
   jj<-data.frame(X=seq(from=r[1], to=r[2], length.out=100))
+  colnames(jj) <- rhs
   p <- predict(mod, newdata=jj, se.fit=TRUE)
-  jj$Y <- p$fit
+  
+  jj[[lhs]] <- p$fit
   jj$SE <- p$se.fit
   jj$CI <- jj$SE * 1.96
   jj$orig.tag <- unique(DF1$orig.tag)[1]
@@ -64,10 +77,20 @@ fit.ssanova <- function(DF)
 #'  
 
 #' }
-tongue.ssanova <- function(tonguedat, labels, individual=FALSE)
+tongue.ssanova <- function(tonguedat, theformula= Y ~ X, labels, weight=NULL, individual=FALSE)
 {
   g<-splineDatForGG(tonguedat, labels)
   
+  gg <- tongue.ssanova2(g, theformula=theformula, weight=weight, 
+                        individual=individual)
+  
+  return(gg)
+}
+
+
+#' @export
+tongue.ssanova2 <- function(g, theformula= Y ~ X, weight=NULL, individual=FALSE)
+{
   ## Try to use nested data frames for the fitting and plotting
   if (individual) {
     g1 <- nest(group_by_(g, "unique.tag"))
@@ -76,7 +99,7 @@ tongue.ssanova <- function(tonguedat, labels, individual=FALSE)
   }
   
   # put the models into the frame
-  g1 <- mutate(g1, model=lapply(data, fit.ssanova))
+  g1 <- mutate(g1, model=lapply(data, fit.ssanova, weight=weight, theformula=theformula))
   # shuffle so that model and prediction are separate
   g2 <- mutate(g1, fit=lapply(model, "[[", "prediction"), 
                model=lapply(model, "[[", "model"))

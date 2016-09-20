@@ -4,7 +4,8 @@
 \alias{tongue.ssanova}
 \title{Fit ssanova to groups of tongue splines}
 \usage{
-tongue.ssanova(tonguedat, labels, individual = FALSE)
+tongue.ssanova(tonguedat, theformula = Y ~ X, labels, weight = NULL,
+  individual = FALSE)
 }
 \arguments{
 \item{tonguedat}{- the tongue data, usually with emu.track and a cut
