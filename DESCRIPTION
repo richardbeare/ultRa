@@ -10,8 +10,7 @@ Depends:
     plyr,
     dplyr,
     tidyr,
-    gss,
-    emu
+    gss
 License: What license is it under?
 LazyData: true
 RoxygenNote: 5.0.1
